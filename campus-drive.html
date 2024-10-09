@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Native - Campus Drive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --background-color: #f8f9fa;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --hover-color: #e8f0fe;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+        }
+
+        .logout-button {
+            margin-top: auto;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-button:hover {
+            background-color: #1967d2;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background-color: #1967d2;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .event-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .event-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .event-info i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .recruit-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .recruit-btn i {
+            margin-right: 8px;
+        }
+
+        .recruit-btn:hover {
+            background-color: #2d9144;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            border-radius: var(--border-radius);
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            background-color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .logo img, .nav-item span, .logout-button span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters, .search-bar {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png"
+                    alt="WorkWise Logo">
+            </div>
+            <nav>
+                <a href="hr_profile.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+                <a href="department.html" class="nav-item"><i class="fas fa-building"></i> <span>Departments</span></a>
+                <a href="comp_chart.html" class="nav-item"><i class="fas fa-sitemap"></i> <span>Org Chart</span></a>
+                <a href="vacancies.html" class="nav-item"><i class="fas fa-briefcase"></i> <span>Job Vacancies</span></a>
+                <a href="campus-drive.html" class="nav-item active"><i class="fas fa-university"></i> <span>Campus Drive</span></a>
+                <a href="calender.html" class="nav-item"><i class="fas fa-calendar"></i> <span>Calendar</span></a>
+                <a href="tasks.html" class="nav-item"><i class="fas fa-tasks"></i> <span>Tasks</span></a>
+            </nav>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Campus Drive Events</h1>
+                <button class="btn" onclick="openModal()"><i class="fas fa-plus"></i> Add New Event</button>
+            </div>
+            <div class="filters">
+                <select id="universityFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Universities</option>
+                </select>
+                <select id="monthFilter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Months</option>
+                </select>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search events...">
+                <button onclick="searchEvents()">Search</button>
+            </div>
+            <div class="grid" id="eventsList">
+                <!-- Events will be dynamically added here -->
+            </div>
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be added here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for adding new events -->
+    <div id="addEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Add New Campus Drive Event</h2>
+            <form id="addEventForm">
+                <div class="form-group">
+                    <label for="eventTitle">Event Title</label>
+                    <input type="text" id="eventTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventUniversity">University</label>
+                    <input type="text" id="eventUniversity" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Date</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventLocation">Location</label>
+                    <input type="text" id="eventLocation" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Description</label>
+                    <textarea id="eventDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="eventType">Event Type</label>
+                    <select id="eventType" required>
+                        <option value="Career Fair">Career Fair</option>
+                        <option value="Information Session">Information Session</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Interview Day">Interview Day</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Add Event</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let events = [
+            { 
+                id: 1,
+                title: "Software Engineering Internship Drive", 
+                university: "MIT", 
+                date: "2024-09-15", 
+                location: "MIT Campus, Cambridge, MA",
+                description: "Recruiting top talent for our summer internship program in software engineering.",
+                type: "Career Fair"
+            },
+            { 
+                id: 2,
+                title: "Data Science Graduate Program Recruitment", 
+                university: "Stanford University", 
+                date: "2024-10-05", 
+                location: "Stanford Campus, Stanford, CA",
+                description: "Seeking brilliant minds for our data science graduate program.",
+                type: "Information Session"
+            },
+            { 
+                id: 3,
+                title: "Product Management Information Session", 
+                university: "Harvard University", 
+                date: "2024-11-10", 
+                location: "Harvard Business School, Boston, MA",
+                description: "Informational session about our product management opportunities for MBA students.",
+                type: "Information Session"
+            }
+        ];
+
+        let currentPage = 1;
+        const eventsPerPage = 6;
+
+        function renderEvents(eventsToRender = events) {
+            const eventsList = document.getElementById('eventsList');
+            eventsList.innerHTML = '';
+            const startIndex = (currentPage - 1) * eventsPerPage;
+            const endIndex = startIndex + eventsPerPage;
+            const paginatedEvents =   eventsToRender.slice(startIndex, endIndex);
+
+            paginatedEvents.forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                eventCard.innerHTML = `
+                    <h3>${event.title}</h3>
+                    <div class="event-info">
+                        <i class="fas fa-university"></i>
+                        <span>${event.university}</span>
+                    </div>
+                    <div class="event-info">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>${formatDate(event.date)}</span>
+                    </div>
+                    <div class="event-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${event.location}</span>
+                    </div>
+                    <div class="event-info">
+                        <i class="fas fa-tag"></i>
+                        <span>${event.type}</span>
+                    </div>
+                    <p>${event.description}</p>
+                    <button class="recruit-btn" onclick="recruitForEvent(${event.id})">
+                        <i class="fas fa-user-plus"></i> Recruit
+                    </button>
+                `;
+                eventsList.appendChild(eventCard);
+            });
+
+            renderPagination(eventsToRender.length);
+        }
+
+        function renderPagination(totalEvents) {
+            const totalPages = Math.ceil(totalEvents / eventsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.onclick = () => changePage(currentPage - 1);
+            prevButton.disabled = currentPage === 1;
+            pagination.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.onclick = () => changePage(i);
+                pageButton.disabled = currentPage === i;
+                pagination.appendChild(pageButton);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.onclick = () => changePage(currentPage + 1);
+            nextButton.disabled = currentPage === totalPages;
+            pagination.appendChild(nextButton);
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderEvents();
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function openModal() {
+            document.getElementById('addEventModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('addEventModal').style.display = 'none';
+        }
+
+        document.getElementById('addEventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newEvent = {
+                id: events.length + 1,
+                title: document.getElementById('eventTitle').value,
+                university: document.getElementById('eventUniversity').value,
+                date: document.getElementById('eventDate').value,
+                location: document.getElementById('eventLocation').value,
+                description: document.getElementById('eventDescription').value,
+                type: document.getElementById('eventType').value
+            };
+            events.push(newEvent);
+            renderEvents();
+            closeModal();
+            this.reset();
+            updateFilters();
+        });
+
+        function recruitForEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            alert(`Recruitment process initiated for ${event.title} at ${event.university}`);
+        }
+
+        function logout() {
+            window.location.href = 'index.html';
+        }
+
+        function updateFilters() {
+            const universityFilter = document.getElementById('universityFilter');
+            const monthFilter = document.getElementById('monthFilter');
+
+            const universities = [...new Set(events.map(event => event.university))];
+            const months = [...new Set(events.map(event => new Date(event.date).toLocaleString('default', { month: 'long' })))];
+
+            universityFilter.innerHTML = '<option value="">All Universities</option>';
+            universities.forEach(university => {
+                universityFilter.innerHTML += `<option value="${university}">${university}</option>`;
+            });
+
+            monthFilter.innerHTML = '<option value="">All Months</option>';
+            months.forEach(month => {
+                monthFilter.innerHTML += `<option value="${month}">${month}</option>`;
+            });
+        }
+
+        function applyFilters() {
+            const universityFilter = document.getElementById('universityFilter').value;
+            const monthFilter = document.getElementById('monthFilter').value;
+
+            let filteredEvents = events;
+
+            if (universityFilter) {
+                filteredEvents = filteredEvents.filter(event => event.university === universityFilter);
+            }
+
+            if (monthFilter) {
+                filteredEvents = filteredEvents.filter(event => {
+                    const eventMonth = new Date(event.date).toLocaleString('default', { month: 'long' });
+                    return eventMonth === monthFilter;
+                });
+            }
+
+            renderEvents(filteredEvents);
+        }
+
+        function searchEvents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredEvents = events.filter(event => 
+                event.title.toLowerCase().includes(searchTerm) ||
+                event.university.toLowerCase().includes(searchTerm) ||
+                event.description.toLowerCase().includes(searchTerm)
+            );
+            renderEvents(filteredEvents);
+        }
+
+        // Initial render
+        renderEvents();
+        updateFilters();
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('addEventModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

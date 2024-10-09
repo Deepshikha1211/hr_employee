@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkWise - Job Vacancies</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --text-color: #333;
+      --background-color: #f4f4f4;
+      --hover-color: #e0e0e0;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .logo img {
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      transition: var(--transition);
+    }
+
+    .nav-item i {
+      margin-right: 10px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .logout-button {
+      margin-top: auto;
+      padding: 10px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .logout-button:hover {
+      background-color: #c0392b;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      color: var(--secondary-color);
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-bar input, .search-bar select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .search-bar input:focus, .search-bar select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .job-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .job-card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .job-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: var(--secondary-color);
+    }
+
+    .job-details {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .job-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 15px;
+    }
+
+    .apply-button, .save-job-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .apply-button:hover, .save-job-button:hover {
+      background-color: #2980b9;
+    }
+
+    .save-job-button {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .save-job-button:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 800px;
+      border-radius: 10px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+    }
+
+    .application-form {
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .submit-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 16px;
+    }
+
+    .submit-button:hover {
+      background-color: #2980b9;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+
+    .tab {
+      padding: 15px 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-grow: 1;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .tab:hover {
+      background-color: var(--hover-color);
+    }
+
+    .tab.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .job-details-section {
+      margin-bottom: 20px;
+    }
+
+    .job-details-section h3 {
+      margin-bottom: 10px;
+      color: var(--secondary-color);
+    }
+
+    .job-details-section ul {
+      padding-left: 20px;
+    }
+
+    .saved-jobs {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      max-width: 300px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .saved-job-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: var(--background-color);
+      border-radius: 5px;
+    }
+
+    .remove-saved-job {
+      color: var(--accent-color);
+      cursor: pointer;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .pagination button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background-color: #2980b9;
+    }
+
+    .pagination button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .job-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+      flex: 1;
+      margin: 10px;
+      min-width: 200px;
+    }
+
+    .stat-card h3 {
+      font-size: 24px;
+      margin-bottom: 5px;
+      color: var(--primary-color);
+    }
+
+    .stat-card p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        order: 2;
+      }
+
+      .main-content {
+        order: 1;
+      }
+
+      .job-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-bar {
+        flex-direction: column;
+      }
+
+      .search-bar input, .search-bar select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png" alt="WorkWise Logo">
+      </div>
+      <nav>
+        <a href="index.html" class="nav-item active"><i class="fas fa-briefcase"></i> Job Vacancies</a>
+        <a href="my-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> My Applications</a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> Profile</a>
+        <a href="saved-jobs.html" class="nav-item"><i class="fas fa-heart"></i> Saved Jobs</a>
+        <a href="notifications.html" class="nav-item"><i class="fas fa-bell"></i> Notifications</a>
+        <a href="job-market-insights.html" class="nav-item"><i class="fas fa-chart-line"></i> Job Market Insights</a>
+        
+      
+    </nav>
+      <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </aside>
+    <main class="main-content">
+      <div class="page-header">
+        <h1>Job Vacancies</h1>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search jobs...">
+          <select id="departmentFilter">
+            <option value="">All Departments</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Product">Product</option>
+            <option value="Design">Design</option>
+            <option value="Analytics">Analytics</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Sales">Sales</option>
+            <option value="Human Resources">Human Resources</option>
+            <option value="Finance">Finance</option>
+            <option value="Customer Support">Customer Support</option>
+          </select>
+          <select id="locationFilter">
+            <option value="">All Locations</option>
+            <option value="San Francisco">San Francisco</option>
+            <option value="New York">New York</option>
+            <option value="Remote">Remote</option>
+            <option value="Chicago">Chicago</option>
+            <option value="Los Angeles">Los Angeles</option>
+            <option value="Seattle">Seattle</option>
+            <option value="Austin">Austin</option>
+            <option value="Boston">Boston</option>
+          </select>
+          <select id="experienceFilter">
+            <option value="">All Experience Levels</option>
+            <option value="Entry Level">Entry Level</option>
+            <option value="Mid Level">Mid Level</option>
+            <option value="Senior Level">Senior Level</option>
+            <option value="Executive">Executive</option>
+          </select>
+        </div>
+      </div>
+      <div class="job-stats">
+        <div class="stat-card">
+          <h3 id="totalJobs">0</h3>
+          <p>Total Jobs</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="recentJobs">0</h3>
+          <p>Recent Jobs</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="savedJobsCount">0</h3>
+          <p>Saved Jobs</p>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" data-tab="all">All Jobs</div>
+        <div class="tab" data-tab="recent">Recent Jobs</div>
+        <div class="tab" data-tab="recommended">Recommended for You</div>
+      </div>
+      <div class="job-grid" id="jobGrid"></div>
+      <div class="pagination" id="pagination"></div>
+    </main>
+  </div>
+
+  <div id="jobModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalJobTitle"></h2>
+      <div id="jobDetails"></div>
+      <button class="save-job-button" onclick="saveJob()">Save Job</button>
+      <button class="apply-button" onclick="showApplicationForm()">Apply Now</button>
+    </div>
+  </div>
+
+  <div id="applicationModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Apply for <span id="applicationJobTitle"></span></h2>
+      <form id="applicationForm" class="application-form">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" required>
+        </div>
+        <div class="form-group">
+          <label for="experience">Years of Experience</label>
+          <input type="number" id="experience" min="0" required>
+        </div>
+        <div class="form-group">
+          <label for="education">Highest Education</label>
+          <select id="education" required>
+            <option value="">Select Education</option>
+            <option value="High School">High School</option>
+            <option value="Associate">Associate's Degree</option>
+            <option value="Bachelor's">Bachelor's Degree</option>
+            <option value="Master's">Master's Degree</option>
+            <option value="PhD">PhD</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="resume">Resume</label>
+          <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+        </div>
+        <div class="form-group">
+          <label for="coverLetter">Cover Letter</label>
+          <textarea id="coverLetter" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="linkedin">LinkedIn Profile (Optional)</label>
+          <input type="url" id="linkedin">
+        </div>
+        <div class="form-group">
+          <label for="portfolio">Portfolio URL (Optional)</label>
+          <input type="url" id="portfolio">
+        </div>
+        <button type="submit" class="submit-button">Submit Application</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="savedJobs" class="saved-jobs" style="display: none;">
+    <h3>Saved Jobs</h3>
+    <ul id="savedJobsList"></ul>
+  </div>
+
+  <script>
+    const jobVacancies = [
+      { 
+        id: 1, 
+        title: "Senior Software Engineer", 
+        department: "Engineering", 
+        location: "San Francisco", 
+        salary: "$130,000 - $180,000", 
+        type: "Full-time", 
+        posted: "2 days ago",
+        experience: "Senior Level",
+        description: "We are seeking a talented Senior Software Engineer to lead our development team...",
+        responsibilities: [
+          "Architect and develop high-quality, scalable software solutions",
+          "Lead and mentor junior developers",
+          "Collaborate with product managers to define and implement new features",
+          "Optimize application performance and scalability"
+        ],
+        qualifications: [
+          "Bachelor's or Master's degree in Computer Science or related field",
+          "7+ years of experience in software development",
+          "Expert knowledge of JavaScript, Python, and SQL",
+          "Experience with cloud technologies (AWS, Azure, or GCP)",
+          "Strong leadership and communication skills"
+        ]
+      },
+      { 
+        id: 2, 
+        title: "Product Manager", 
+        department: "Product", 
+        location: "New York", 
+        salary: "$110,000 - $150,000", 
+        type: "Full-time", 
+        posted: "1 week ago",
+        experience: "Mid Level",
+        description: "We're looking for an experienced Product Manager to drive our product strategy...",
+        responsibilities: [
+          "Define product vision and strategy",
+          "Conduct market research and competitive analysis",
+          "Work closely with engineering and design teams",
+          "Prioritize features and create product roadmaps"
+        ],
+        qualifications: [
+          "Bachelor's degree in Business, Computer Science, or related field",
+          "5+ years of experience in product management",
+          "Strong analytical and problem-solving skills",
+          "Excellent communication and leadership abilities",
+          "Experience with Agile methodologies"
+        ]
+      },
+      { 
+        id: 3, 
+        title: "UX/UI Designer", 
+        department: "Design", 
+        location: "Remote", 
+        salary: "$90,000 - $130,000", 
+        type: "Full-time", 
+        posted: "3 days ago",
+        experience: "Mid Level",
+        description: "Join our creative team as a UX/UI Designer to craft beautiful and intuitive user experiences...",
+        responsibilities: [
+          "Create user-centered designs by understanding business requirements",
+          "Develop wireframes, prototypes, and high-fidelity mockups",
+          "Conduct user research and usability testing",
+          "Collaborate with product managers and developers"
+        ],
+        qualifications: [
+          "Bachelor's degree in Design, HCI, or related field",
+          "3+ years of experience in UX/UI design",
+          "Proficiency in design tools such as Figma, Sketch, and Adobe Creative Suite",
+          "Strong portfolio demonstrating your design process and skills",
+          "Knowledge of HTML, CSS, and JavaScript is a plus"
+        ]
+      },
+      { 
+        id: 4, 
+        title: "Data Scientist", 
+        department: "Analytics", 
+        location: "Chicago", 
+        salary: "$100,000 - $140,000", 
+        type: "Full-time", 
+        posted: "5 days ago",
+        experience: "Mid Level",
+        description: "We're seeking a talented Data Scientist to turn data into actionable insights...",
+        responsibilities: [
+          "Develop and implement complex machine learning models",
+          "Analyze large datasets to extract valuable insights",
+          "Create data visualizations and reports for stakeholders",
+          "Collaborate with cross-functional teams to drive data-driven decisions"
+        ],
+        qualifications: [
+          "Master's or PhD in Computer Science, Statistics, or related field",
+          "3+ years of experience in data science or machine learning",
+          "Proficiency in Python, R, and SQL",
+          "Experience with big data technologies like Hadoop and Spark",
+          "Strong statistical and mathematical skills"
+        ]
+      },
+      { 
+        id: 5, 
+        title: "Marketing Manager", 
+        department: "Marketing", 
+        location: "Los Angeles", 
+        salary: "$80,000 - $120,000", 
+        type: "Full-time", 
+        posted: "1 day ago",
+        experience: "Mid Level",
+        description: "We're looking for a creative and data-driven Marketing Manager to lead our marketing efforts...",
+        responsibilities: [
+          "Develop and implement marketing strategies across various channels",
+          "Manage social media presence and content creation",
+          "Analyze marketing campaign performance and ROI",
+          "Collaborate with sales team to generate leads and drive conversions"
+        ],
+        qualifications: [
+          "Bachelor's degree in Marketing, Business, or related field",
+          "5+ years of experience in digital marketing",
+          "Strong understanding of SEO, SEM, and social media marketing",
+          "Experience with marketing automation tools and CRM systems",
+          "Excellent analytical and communication skills"
+        ]
+      },
+      { 
+        id: 6, 
+        title: "DevOps Engineer", 
+        department: "Engineering", 
+        location: "Seattle", 
+        salary: "$120,000 - $160,000", 
+        type: "Full-time", 
+        posted: "4 days ago",
+        experience: "Senior Level",
+        description: "Join our team as a DevOps Engineer to streamline our development and deployment processes...",
+        responsibilities: [
+          "Design and implement CI/CD pipelines",
+          "Manage and optimize cloud infrastructure (AWS, Azure, or GCP)",
+          "Implement monitoring and alerting systems",
+          "Collaborate with development teams to improve system reliability and performance"
+        ],
+        qualifications: [
+          "Bachelor's degree in Computer Science or related field",
+          "5+ years of experience in DevOps or Site Reliability Engineering",
+          "Strong knowledge of Linux/Unix systems",
+          "Experience with containerization technologies (Docker, Kubernetes)",
+          "Proficiency in scripting languages (Python, Bash, etc.)"
+        ]
+      },
+      { 
+        id: 7, 
+        title: "Sales Representative", 
+        department: "Sales", 
+        location: "New York", 
+        salary: "$60,000 - $100,000 + Commission", 
+        type: "Full-time", 
+        posted: "1 week ago",
+        experience: "Entry Level",
+        description: "We're seeking enthusiastic Sales Representatives to join our growing team...",
+        responsibilities: [
+          "Identify and pursue new sales opportunities",
+          "Build and maintain strong relationships with clients",
+          "Meet and exceed sales targets",
+          "Collaborate with marketing team on lead generation strategies"
+        ],
+        qualifications: [
+          "Bachelor's degree in Business, Marketing, or related field",
+          "1-3 years of sales experience preferred",
+          "Strong communication and negotiation skills",
+          "Self-motivated with a results-driven attitude",
+          "Experience with CRM systems is a plus"
+        ]
+      },
+      { 
+        id: 8, 
+        title: "Human Resources Manager", 
+        department: "Human Resources", 
+        location: "Chicago", 
+        salary: "$90,000 - $130,000", 
+        type: "Full-time", 
+        posted: "6 days ago",
+        experience: "Senior Level",
+        description: "We're looking for an experienced HR Manager to lead our human resources department...",
+        responsibilities: [
+          "Develop and implement HR strategies and initiatives",
+          "Manage recruitment, onboarding, and employee relations",
+          "Oversee compensation and benefits programs",
+          "Ensure compliance with labor laws and regulations"
+        ],
+        qualifications: [
+          "Bachelor's degree in Human Resources, Business, or related field",
+          "7+ years of experience in HR, with at least 3 years in a management role",
+          "SHRM-CP or SHRM-SCP certification preferred",
+          "Strong knowledge of HR best practices and employment laws",
+          "Excellent leadership and communication skills"
+        ]
+      },
+      { 
+        id: 9, 
+        title: "Financial Analyst", 
+        department: "Finance", 
+        location: "New York", 
+        salary: "$70,000 - $100,000", 
+        type: "Full-time", 
+        posted: "3 days ago",
+        experience: "Entry Level",
+        description: "We're seeking a detail-oriented Financial Analyst to join our finance team...",
+        responsibilities: [
+          "Prepare financial reports and forecasts",
+          "Analyze financial data and identify trends",
+          "Assist in budgeting and planning processes",
+          "Support management with financial decision-making"
+        ],
+        qualifications: [
+          "Bachelor's degree in Finance, Accounting, or related field",
+          "1-3 years of experience in financial analysis",
+          "Strong proficiency in Excel and financial modeling",
+          "Knowledge of accounting principles and financial statements",
+          "Attention to detail and strong analytical skills"
+        ]
+      },
+      { 
+        id: 10, 
+        title: "Customer Support Specialist", 
+        department: "Customer Support", 
+        location: "Remote", 
+        salary: "$45,000 - $65,000", 
+        type: "Full-time", 
+        posted: "2 days ago",
+        experience: "Entry Level",
+        description: "Join our customer support team to provide exceptional service to our clients...",
+        responsibilities: [
+          "Respond to customer inquiries via phone, email, and chat",
+          "Troubleshoot and resolve customer issues",
+          "Maintain customer records and document support interactions",
+          "Identify and escalate complex issues to appropriate teams"
+        ],
+        qualifications: [
+          "High school diploma or equivalent required, Bachelor's degree preferred",
+          "1+ years of customer service experience",
+          "Excellent communication and problem-solving skills",
+          "Ability to work in a fast-paced environment",
+          "Proficiency in CRM systems and Microsoft Office suite"
+        ]
+      }
+    ];
+
+    const jobGrid = document.getElementById('jobGrid');
+    const searchInput = document.getElementById('searchInput');
+    const departmentFilter = document.getElementById('departmentFilter');
+    const locationFilter = document.getElementById('locationFilter');
+    const experienceFilter = document.getElementById('experienceFilter');
+    const jobModal = document.getElementById('jobModal');
+    const applicationModal = document.getElementById('applicationModal');
+    const closeBtns = document.getElementsByClassName('close');
+    const tabs = document.querySelectorAll('.tab');
+    const savedJobs = document.getElementById('savedJobs');
+    const savedJobsList = document.getElementById('savedJobsList');
+    const pagination = document.getElementById('pagination');
+    const totalJobsElement = document.getElementById('totalJobs');
+    const recentJobsElement = document.getElementById('recentJobs');
+    const savedJobsCountElement = document.getElementById('savedJobsCount');
+
+    let currentJobId = null;
+    let savedJobsArray = [];
+    let currentPage = 1;
+    const jobsPerPage = 6;
+
+    function displayJobs(jobs) {
+      jobGrid.innerHTML = '';
+      const startIndex = (currentPage - 1) * jobsPerPage;
+      const endIndex = startIndex + jobsPerPage;
+      const paginatedJobs = jobs.slice(startIndex, endIndex);
+
+      paginatedJobs.forEach(job => {
+        const jobCard = document.createElement('div');
+        jobCard.className = 'job-card';
+        jobCard.innerHTML = `
+          <div class="job-title">${job.title}</div>
+          <div class="job-details">
+            <div><i class="fas fa-building"></i> ${job.department}</div>
+            <div><i class="fas fa-map-marker-alt"></i> ${job.location}</div>
+            <div><i class="fas fa-money-bill-wave"></i> ${job.salary}</div>
+          </div>
+          <div class="job-meta">
+            <span><i class="fas fa-clock"></i> ${job.type}</span>
+            <span><i class="fas fa-calendar-alt"></i> Posted: ${job.posted}</span>
+          </div>
+          <button class="apply-button" onclick="openJobModal(${job.id})">View Details</button>
+        `;
+        jobGrid.appendChild(jobCard);
+      });
+
+      updatePagination(jobs.length);
+      updateJobStats();
+    }
+
+    function updatePagination(totalJobs) {
+      const totalPages = Math.ceil(totalJobs / jobsPerPage);
+      pagination.innerHTML = '';
+
+      if (totalPages > 1) {
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.disabled = currentPage === 1;
+        prevButton.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage--;
+            filterJobs();
+          }
+        });
+        pagination.appendChild(prevButton);
+
+        for (let i = 1; i <= totalPages; i++) {
+          const pageButton = document.createElement('button');
+          pageButton.textContent = i;
+          pageButton.classList.toggle('active', i === currentPage);
+          pageButton.addEventListener('click', () => {
+            currentPage = i;
+            filterJobs();
+          });
+          pagination.appendChild(pageButton);
+        }
+
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.disabled = currentPage === totalPages;
+        nextButton.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            filterJobs();
+          }
+        });
+        pagination.appendChild(nextButton);
+      }
+    }
+
+    function filterJobs() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedDepartment = departmentFilter.value;
+      const selectedLocation = locationFilter.value;
+      const selectedExperience = experienceFilter.value;
+
+      const filteredJobs = jobVacancies.filter(job => 
+        job.title.toLowerCase().includes(searchTerm) &&
+        (selectedDepartment === '' || job.department === selectedDepartment) &&
+        (selectedLocation === '' || job.location === selectedLocation) &&
+        (selectedExperience === '' || job.experience === selectedExperience)
+      );
+
+      displayJobs(filteredJobs);
+    }
+
+    function openJobModal(jobId) {
+      const job = jobVacancies.find(j => j.id === jobId);
+      currentJobId = jobId;
+      document.getElementById('modalJobTitle').textContent = job.title;
+      const jobDetailsElement = document.getElementById('jobDetails');
+      jobDetailsElement.innerHTML = `
+        <div class="job-details-section">
+          <h3>Job Description</h3>
+          <p>${job.description}</p>
+        </div>
+        <div class="job-details-section">
+          <h3>Responsibilities</h3>
+          <ul>
+            ${job.responsibilities.map(resp => `<li>${resp}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="job-details-section">
+          <h3>Qualifications</h3>
+          <ul>
+            ${job.qualifications.map(qual => `<li>${qual}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="job-meta">
+          <div><strong>Department:</strong> ${job.department}</div>
+          <div><strong>Location:</strong> ${job.location}</div>
+          <div><strong>Salary:</strong> ${job.salary}</div>
+          <div><strong>Type:</strong> ${job.type}</div>
+          <div><strong>Experience Level:</strong> ${job.experience}</div>
+          <div><strong>Posted:</strong> ${job.posted}</div>
+        </div>
+      `;
+      jobModal.style.display = 'block';
+    }
+
+    function showApplicationForm() {
+      const job = jobVacancies.find(j => j.id === currentJobId);
+      document.getElementById('applicationJobTitle').textContent = job.title;
+      jobModal.style.display = 'none';
+      applicationModal.style.display = 'block';
+    }
+
+    function saveJob() {
+      const job = jobVacancies.find(j => j.id === currentJobId);
+      if (!savedJobsArray.some(savedJob => savedJob.id === job.id)) {
+        savedJobsArray.push(job);
+        updateSavedJobsList();
+        alert(`Job "${job.title}" has been saved!`);
+      } else {
+        alert('This job is already saved.');
+      }
+    }
+
+    function updateSavedJobsList() {
+      savedJobsList.innerHTML = '';
+      savedJobsArray.forEach(job => {
+        const li = document.createElement('li');
+        li.className = 'saved-job-item';
+        li.innerHTML = `
+          <span>${job.title}</span>
+          <i class="fas fa-times remove-saved-job" onclick="removeSavedJob(${job.id})"></i>
+        `;
+        savedJobsList.appendChild(li);
+      });
+      savedJobs.style.display = savedJobsArray.length > 0 ? 'block' : 'none';
+      updateJobStats();
+    }
+
+    function removeSavedJob(jobId) {
+      savedJobsArray = savedJobsArray.filter(job => job.id !== jobId);
+      updateSavedJobsList();
+    }
+
+    function updateJobStats() {
+      totalJobsElement.textContent = jobVacancies.length;
+      const recentJobs = jobVacancies.filter(job => job.posted.includes('day')).length;
+      recentJobsElement.textContent = recentJobs;
+      savedJobsCountElement.textContent = savedJobsArray.length;
+    }
+
+    Array.from(closeBtns).forEach(btn => {
+      btn.onclick = function() {
+        jobModal.style.display = 'none';
+        applicationModal.style.display = 'none';
+      }
+    });
+
+    window.onclick = function(event) {
+      if (event.target == jobModal) {
+        jobModal.style.display = 'none';
+      }
+      if (event.target == applicationModal) {
+        applicationModal.style.display = 'none';
+      }
+    }
+
+    document.getElementById('applicationForm').onsubmit = function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      console.log('Application submitted:', Object.fromEntries(formData));
+      alert('Application submitted successfully!');
+      applicationModal.style.display = 'none';
+      e.target.reset();
+    }
+
+    function logout() {
+          window.location.href = 'index.html'; // Redirect to the signup page
+        }
+
+    searchInput.addEventListener('input', filterJobs);
+    departmentFilter.addEventListener('change', filterJobs);
+    locationFilter.addEventListener('change', filterJobs);
+    experienceFilter.addEventListener('change', filterJobs);
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const tabType = tab.dataset.tab;
+        if (tabType === 'recent') {
+          const recentJobs = jobVacancies.filter(job => job.posted.includes('day'));
+          displayJobs(recentJobs);
+        } else if (tabType === 'recommended') {
+          // In a real application, this would be based on the user's profile and preferences
+          const recommendedJobs = jobVacancies.filter(job => job.department === 'Engineering' || job.department === 'Product');
+          displayJobs(recommendedJobs);
+        } else {
+          displayJobs(jobVacancies);
+        }
+      });
+    });
+
+    // Initialize the page
+    displayJobs(jobVacancies);
+  </script>
+</body>
+
+</html>

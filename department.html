@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Native - Departments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --background-color: #f8f9fa;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --hover-color: #e8f0fe;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+        }
+
+        .logout-button {
+            margin-top: auto;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-button:hover {
+            background-color: #1967d2;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .departments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .department-card {
+            height: 200px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--primary-color);
+        }
+
+        .department-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .department-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .department-info img {
+            width: 16px;
+            margin-right: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border: none;
+            width: 90%;
+            max-width: 800px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .employee-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .employee-card {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            background-color: white;
+            transition: box-shadow 0.3s;
+        }
+
+        .employee-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .employee-card img {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .employee-card h4 {
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .employee-card p {
+            margin: 5px 0;
+            color: var(--text-secondary);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .skill-tag {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding: 10px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .departments-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png"
+                    alt="WorkWise Logo">
+            </div>
+            <nav>
+                <a href="hr_profile.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="department.html" class="nav-item active"><i class="fas fa-building"></i> Departments</a>
+                <a href="comp_chart.html" class="nav-item"><i class="fas fa-sitemap"></i> Org Chart</a>
+                <a href="vacancies.html" class="nav-item"><i class="fas fa-briefcase"></i> Job Vacancies</a>
+                <a href="campus-drive.html" class="nav-item"><i class="fas fa-university"></i> Campus Drive</a>
+                <a href="calender.html" class="nav-item"><i class="fas fa-calendar"></i> <span>Calendar</span></a>
+                <a href="tasks.html" class="nav-item"><i class="fas fa-tasks"></i> <span>Tasks</span></a>
+            </nav>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Departments</h2>
+            </div>
+            <div class="departments-grid" id="departmentsGrid">
+                <!-- Department cards will be dynamically added here -->
+            </div>
+        </main>
+    </div>
+
+    <div id="departmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalDepartmentName"></h2>
+            <p id="modalTeamLeader"></p>
+            <h3>Employees:</h3>
+            <ul id="employeeList" class="employee-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        const departments = [
+            {
+                id: 1,
+                name: "Engineering",
+                employeeCount: 50,
+                teamLeader: "John Doe",
+                color: "#1a73e8",
+                employees: [
+                    { id: 1, name: "John Doe", position: "Team Leader", email: "john.doe@example.com", phone: "+1 (555) 123-4567", hireDate: "2010-01-15", skills: ["JavaScript", "React", "Node.js"], image: "https://randomuser.me/api/portraits/men/1.jpg" },
+                    { id: 2, name: "Jane Smith", position: "Software Engineer", email: "jane.smith@example.com", phone: "+1 (555) 234-5678", hireDate: "2015-03-22", skills: ["Python", "Django", "SQL"], image: "https://randomuser.me/api/portraits/women/2.jpg" },
+                    { id: 3, name: "Emily Johnson", position: "DevOps Engineer", email: "emily.johnson@example.com", phone: "+1 (555) 345-6789", hireDate: "2018-07-30", skills: ["AWS", "Docker", "Kubernetes"], image: "https://randomuser.me/api/portraits/women/3.jpg" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Marketing",
+                employeeCount: 30,
+                teamLeader: "Alice Green",
+                color: "#e53935",
+                employees: [
+                    { id: 4, name: "Alice Green", position: "Team Leader", email: "alice.green@example.com", phone: "+1 (555) 456-7890", hireDate: "2012-05-11", skills: ["SEO", "Content Marketing", "Social Media"], image: "https://randomuser.me/api/portraits/women/4.jpg" },
+                    { id: 5, name: "Bob Brown", position: "Marketing Specialist", email: "bob.brown@example.com", phone: "+1 (555) 567-8901", hireDate: "2017-09-05", skills: ["Advertising", "Campaign Management", "Analytics"], image: "https://randomuser.me/api/portraits/men/5.jpg" }
+                ]
+            },
+            {
+                id: 3,
+                name: "Human Resources",
+                employeeCount: 15,
+                teamLeader: "Sarah Johnson",
+                color: "#43a047",
+                employees: [
+                    { id: 6, name: "Sarah Johnson", position: "HR Manager", email: "sarah.johnson@example.com", phone: "+1 (555) 678-9012", hireDate: "2011-08-20", skills: ["Recruitment", "Employee Relations", "Training"], image: "https://randomuser.me/api/portraits/women/6.jpg" },
+                    { id: 7, name: "Michael Lee", position: "HR Specialist", email: "michael.lee@example.com", phone: "+1 (555) 789-0123", hireDate: "2016-11-15", skills: ["Benefits Administration", "Performance Management", "HRIS"], image: "https://randomuser.me/api/portraits/men/7.jpg" }
+                ]
+            }
+        ];
+
+        const departmentsGrid = document.getElementById('departmentsGrid');
+        const departmentModal = document.getElementById('departmentModal');
+        const modalDepartmentName = document.getElementById('modalDepartmentName');
+        const modalTeamLeader = document.getElementById('modalTeamLeader');
+        const employeeList = document.getElementById('employeeList');
+        const closeModal = document.querySelector('.close');
+
+        function createDepartmentCard(department) {
+            const card = document.createElement('div');
+            card.className = 'department-card';
+            card.style.backgroundColor = department.color;
+            card.innerHTML = `
+                <div class="department-info">
+                    <h3>${department.name}</h3>
+                </div>
+                <div>${department.employeeCount} employees</div>
+                <div>Team Leader: ${department.teamLeader}</div>
+            `;
+            card.addEventListener('click', () => showDepartmentDetails(department));
+            departmentsGrid.appendChild(card);
+        }
+
+        function showDepartmentDetails(department) {
+            modalDepartmentName.textContent = department.name;
+            modalTeamLeader.textContent = `Team Leader: ${department.teamLeader}`;
+            employeeList.innerHTML = '';
+            department.employees.forEach(employee => {
+                const employeeCard = document.createElement('li');
+                employeeCard.className = 'employee-card';
+                employeeCard.innerHTML = `
+                    <img src="${employee.image}" alt="${employee.name}">
+                    <div>
+                        <h4>${employee.name}</h4>
+                        <p>Position: ${employee.position}</p>
+                        <p>Email: ${employee.email}</p>
+                        <p>Phone: ${employee.phone}</p>
+                        <p>Hire Date: ${employee.hireDate}</p>
+                        <div class="skills-list">
+                            ${employee.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                employeeList.appendChild(employeeCard);
+            });
+            departmentModal.style.display = 'flex';
+        }
+
+        closeModal.addEventListener('click', () => {
+            departmentModal.style.display = 'none';
+        });
+
+        window.onclick = function (event) {
+            if (event.target === departmentModal) {
+                departmentModal.style.display = 'none';
+            }
+        }
+
+        departments.forEach(createDepartmentCard);
+
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

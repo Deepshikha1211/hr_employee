@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkWise - My Applications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --text-secondary: #777;
+            --border-color: #e0e0e0;
+            --hover-color: #e8f0fe;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-button {
+            margin-top: auto;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .page-header h1 {
+            font-size: 2.5em;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-dropdown, .search-input, .sort-dropdown {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            font-size: 16px;
+        }
+
+        .search-input {
+            width: 200px;
+        }
+
+        .applications-list {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .application-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .application-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .application-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .application-card p {
+            margin-bottom: 5px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status.under-review {
+            background-color: #ffeaa7;
+            color: #d35400;
+        }
+
+        .status.interviewed {
+            background-color: #81ecec;
+            color: #00b894;
+        }
+
+        .status.rejected {
+            background-color: #fab1a0;
+            color: #d63031;
+        }
+
+        .status.offer-received {
+            background-color: #55efc4;
+            color: #00b894;
+        }
+
+        .status.withdrawn {
+            background-color: #dfe6e9;
+            color: #636e72;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .card-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .view-details {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .view-details:hover {
+            background-color: #2980b9;
+        }
+
+        .withdraw {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .withdraw:hover {
+            background-color: #c0392b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            background-color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            flex: 1;
+            margin: 0 10px 10px;
+            min-width: 150px;
+        }
+
+        .stat-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .logo img, .nav-item span, .logout-button span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+            }
+
+            .applications-list {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-container {
+                margin-top: 10px;
+            }
+
+            .stat-card {
+                min-width: calc(50% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div>
+                <div class="logo">
+                    <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png" alt="WorkWise Logo">
+                </div>
+                <nav>
+                    <a href="applicant.html" class="nav-item"><i class="fas fa-briefcase"></i> <span>Job Vacancies</span></a>
+                    <a href="my-applications.html" class="nav-item active"><i class="fas fa-file-alt"></i> <span>My Applications</span></a>
+                    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <span>Profile</span></a>
+                    <a href="saved-jobs.html" class="nav-item"><i class="fas fa-heart"></i> <span>Saved Jobs</span></a>
+                    <a href="notifications.html" class="nav-item"><i class="fas fa-bell"></i> <span>Notifications</span></a>
+                    <a href="job-market-insights.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>Job Market Insights</span></a>
+                </nav>
+            </div>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>My Applications</h1>
+                <div class="filter-container">
+                    <select class="filter-dropdown" id="statusFilter">
+                        <option value="all">All Statuses</option>
+                        <option value="under-review">Under Review</option>
+                        <option value="interviewed">Interviewed</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="offer-received">Offer Received</option>
+                        <option value="withdrawn">Withdrawn</option>
+                    </select>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search applications...">
+                    <select class="sort-dropdown" id="sortFilter">
+                        <option value="date-desc">Date (Newest First)</option>
+                        <option value="date-asc">Date (Oldest First)</option>
+                        <option value="company-asc">Company (A-Z)</option>
+                        <option value="company-desc">Company (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Total Applications</h3>
+                    <p id="totalApplications">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Under Review</h3>
+                    <p id="underReviewCount">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Interviewed</h3>
+                    <p id="interviewedCount">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Offers Received</h3>
+                    <p id="offersCount">0</p>
+                </div>
+            </div>
+            <div id="applicationsList" class="applications-list">
+                <!-- Applications will be dynamically added here -->
+            </div>
+            <div id="pagination" class="pagination">
+                <!-- Pagination buttons will be added here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for application details -->
+    <div id="applicationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample applications data
+        const applications = [
+            { id: 1, jobTitle: "Senior Software Engineer", company: "Tech Co", status: "Under Review", appliedDate: "2023-05-15", description: "Exciting opportunity for a senior developer to lead projects." },
+            { id: 2, jobTitle: "Product Manager", company: "Innovate Inc", status: "Interviewed", appliedDate: "2023-05-10", description: "Looking for an experienced PM to drive product strategy." },
+            { id: 3, jobTitle: "UX Designer", company: "Design Studio", status: "Rejected", appliedDate: "2023-05-05", description: "Create beautiful and intuitive user experiences for our clients." },
+            { id: 4, jobTitle: "Data Scientist", company: "AI Solutions", status: "Under Review", appliedDate: "2023-05-18", description: "Apply machine learning to solve complex business problems." },
+            { id: 5, jobTitle: "Marketing Specialist", company: "Brand Builders", status: "Interviewed", appliedDate: "2023-05-12", description: "Develop and execute marketing campaigns for various clients." },
+            { id: 6, jobTitle: "Frontend Developer", company: "Web Wizards", status: "Offer Received", appliedDate: "2023-05-20", description: "Create responsive and interactive web applications." },
+            { id: 7, jobTitle: "DevOps Engineer", company: "Cloud Systems", status: "Under Review", appliedDate: "2023-05-22", description: "Manage and optimize our cloud infrastructure and deployment pipelines." },
+            { id: 8, jobTitle: "Business Analyst", company: "Strategy Corp", status: "Interviewed", appliedDate: "2023-05-25", description: "Analyze business processes and recommend improvements." },
+            { id: 9, jobTitle: "Mobile App Developer", company: "App Innovators", status: "Under Review", appliedDate: "2023-05-28", description: "Develop cutting-edge mobile applications for iOS and Android." },
+            
+            { id: 10, jobTitle: "HR Manager", company: "People First", status: "Rejected", appliedDate: "2023-05-30", description: "Lead our HR initiatives and foster a positive company culture." }
+        ];
+
+        const itemsPerPage = 6;
+        let currentPage = 1;
+
+        function displayApplications(page, filter = 'all', searchTerm = '', sortBy = 'date-desc') {
+            const applicationsList = document.getElementById('applicationsList');
+            applicationsList.innerHTML = '';
+
+            let filteredApplications = applications.filter(app => 
+                (filter === 'all' || app.status.toLowerCase().replace(' ', '-') === filter) &&
+                (app.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                 app.company.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+
+            // Sorting
+            filteredApplications.sort((a, b) => {
+                switch(sortBy) {
+                    case 'date-asc':
+                        return new Date(a.appliedDate) - new Date(b.appliedDate);
+                    case 'date-desc':
+                        return new Date(b.appliedDate) - new Date(a.appliedDate);
+                    case 'company-asc':
+                        return a.company.localeCompare(b.company);
+                    case 'company-desc':
+                        return b.company.localeCompare(a.company);
+                    default:
+                        return 0;
+                }
+            });
+
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
+
+            paginatedApplications.forEach(app => {
+                const appCard = document.createElement('div');
+                appCard.className = 'application-card';
+                appCard.innerHTML = `
+                    <h3>${app.jobTitle}</h3>
+                    <p><strong>Company:</strong> ${app.company}</p>
+                    <p><strong>Status:</strong> <span class="status ${app.status.toLowerCase().replace(' ', '-')}">${app.status}</span></p>
+                    <p><strong>Applied on:</strong> ${formatDate(app.appliedDate)}</p>
+                    <div class="card-actions">
+                        <button class="view-details" onclick="viewDetails(${app.id})">View Details</button>
+                        ${app.status !== 'Withdrawn' ? `<button class="withdraw" onclick="withdrawApplication(${app.id})">Withdraw</button>` : ''}
+                    </div>
+                `;
+                applicationsList.appendChild(appCard);
+            });
+
+            updatePagination(filteredApplications.length, page);
+            updateStats();
+        }
+
+        function updatePagination(totalItems, currentPage) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                
+                button.innerText = i;
+                button.disabled = i === currentPage;
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    displayApplications(currentPage, document.getElementById('statusFilter').value, document.getElementById('searchInput').value, document.getElementById('sortFilter').value);
+                });
+                paginationElement.appendChild(button);
+            }
+        }
+
+        function viewDetails(id) {
+            const app = applications.find(a => a.id === id);
+            const modal = document.getElementById('applicationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalTitle.textContent = app.jobTitle;
+            modalContent.innerHTML = `
+                <p><strong>Company:</strong> ${app.company}</p>
+                <p><strong>Status:</strong> <span class="status ${app.status.toLowerCase().replace(' ', '-')}">${app.status}</span></p>
+                <p><strong>Applied on:</strong> ${formatDate(app.appliedDate)}</p>
+                <p><strong>Description:</strong> ${app.description}</p>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        function withdrawApplication(id) {
+            if (confirm(`Are you sure you want to withdraw your application for ${applications.find(a => a.id === id).jobTitle}?`)) {
+                applications.find(a => a.id === id).status = 'Withdrawn';
+                displayApplications(currentPage, document.getElementById('statusFilter').value, document.getElementById('searchInput').value, document.getElementById('sortFilter').value);
+                alert(`Application withdrawn successfully.`);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalApplications').textContent = applications.length;
+            document.getElementById('underReviewCount').textContent = applications.filter(app => app.status === 'Under Review').length;
+            document.getElementById('interviewedCount').textContent = applications.filter(app => app.status === 'Interviewed').length;
+            document.getElementById('offersCount').textContent = applications.filter(app => app.status === 'Offer Received').length;
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function logout() {
+            // In a real application, you would handle the logout process here
+            window.location.href = 'index.html';
+        }
+
+        // Event listeners
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            currentPage = 1;
+            displayApplications(currentPage, this.value, document.getElementById('searchInput').value, document.getElementById('sortFilter').value);
+        });
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            currentPage = 1;
+            displayApplications(currentPage, document.getElementById('statusFilter').value, this.value, document.getElementById('sortFilter').value);
+        });
+
+        document.getElementById('sortFilter').addEventListener('change', function() {
+            currentPage = 1;
+            displayApplications(currentPage, document.getElementById('statusFilter').value, document.getElementById('searchInput').value, this.value);
+        });
+
+        // Close modal when clicking on <span> (x)
+        document.getElementsByClassName('close')[0].onclick = function() {
+            document.getElementById('applicationModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('applicationModal')) {
+                document.getElementById('applicationModal').style.display = 'none';
+            }
+        }
+
+        // Initial display
+        displayApplications(currentPage);
+    </script>
+</body>
+</html>

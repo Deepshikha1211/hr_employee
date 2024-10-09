@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Native - Job Vacancies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --background-color: #f8f9fa;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --hover-color: #e8f0fe;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+        }
+
+        .logout-button {
+            margin-top: auto;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-button:hover {
+            background-color: #1967d2;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background-color: #1967d2;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .vacancy-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .vacancy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .vacancy-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .vacancy-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .vacancy-info i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 800px;
+            border-radius: var(--border-radius);
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--primary-color);
+        }
+
+        .applicant-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .applicant-card {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .applicant-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .applicant-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .applicant-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .applicant-skills {
+            margin-top: 15px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* New styles for the vacancy form */
+        .vacancy-form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding: 10px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png"
+                    alt="WorkWise Logo">
+            </div>
+            <nav>
+                <a href="hr_profile.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="department.html" class="nav-item"><i class="fas fa-building"></i> Departments</a>
+                <a href="comp_chart.html" class="nav-item"><i class="fas fa-sitemap"></i> Org Chart</a>
+                <a href="vacancies.html" class="nav-item active"><i class="fas fa-briefcase"></i> Job Vacancies</a>
+                <a href="campus-drive.html" class="nav-item"><i class="fas fa-university"></i> Campus Drive</a>
+                <a href="calender.html" class="nav-item"><i class="fas fa-calendar"></i> <span>Calendar</span></a>
+                <a href="tasks.html" class="nav-item"><i class="fas fa-tasks"></i> <span>Tasks</span></a>
+            </nav>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Job Vacancies</h1>
+                <button class="btn" onclick="showAddVacancyModal()"><i class="fas fa-plus"></i> Add New Vacancy</button>
+            </div>
+            <div class="grid" id="vacanciesList">
+                <!-- Vacancies will be dynamically added here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for displaying applicants -->
+    <div id="applicantsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('applicantsModal')">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="applicantsList" class="applicant-list"></div>
+        </div>
+    </div>
+
+    <!-- Modal for adding a new vacancy -->
+    <div id="addVacancyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addVacancyModal')">&times;</span>
+            <h2>Add New Vacancy</h2>
+            <form id="vacancyForm" class="vacancy-form">
+                <div class="form-group">
+                    <label for="title">Job Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+                <button type="submit" class="btn">Add Vacancy</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let vacancies = [
+            {
+                title: "Senior Software Engineer",
+                department: "Engineering",
+                location: "San Francisco, CA",
+                applicants: [
+                    {
+                        name: "John Doe",
+                        age: 32,
+                        education: "M.S. in Computer Science",
+                        experience: "8 years",
+                        currentCompany: "Tech Innovators Inc.",
+                        skills: ["Java", "Python", "AWS", "Microservices"]
+                    },
+                    {
+                        name: "Jane Smith",
+                        age: 29,
+                        education: "B.S. in Software Engineering",
+                        experience: "6 years",
+                        currentCompany: "DataDrive Solutions",
+                        skills: ["JavaScript", "React", "Node.js", "MongoDB"]
+                    },
+                    {
+                        name: "Mike Johnson",
+                        age: 35,
+                        education: "Ph.D. in Computer Science",
+                        experience: "10 years",
+                        currentCompany: "AI Frontiers",
+                        skills: ["C++", "Machine Learning", "Distributed Systems"]
+                    }
+                ]
+            },
+            {
+                title: "Product Manager",
+                department: "Product",
+                location: "New York, NY",
+                applicants: [
+                    {
+                        name: "Anna Lee",
+                        age: 30,
+                        education: "MBA",
+                        experience: "7 years",
+                        currentCompany: "InnovateTech",
+                        skills: ["Product Strategy", "Market Research", "Agile"]
+                    },
+                    {
+                        name: "James Brown",
+                        age: 34,
+                        education: "B.A. in Business Administration",
+                        experience: "9 years",
+                        currentCompany: "GrowthHub",
+                        skills: ["Roadmapping", "Stakeholder Management", "User Experience"]
+                    }
+                ]
+            },
+            {
+                title: "UX Designer",
+                department: "Design",
+                location: "Remote",
+                applicants: [
+                    {
+                        name: "Emily Chen",
+                        age: 28,
+                        education: "B.F.A. in Graphic Design",
+                        experience: "5 years",
+                        currentCompany: "DesignWorks",
+                        skills: ["UI/UX Design", "Figma", "User Research", "Prototyping"]
+                    },
+                    {
+                        name: "David Wilson",
+                        age: 31,
+                        education: "M.S. in Human-Computer Interaction",
+                        experience: "7 years",
+                        currentCompany: "UX Innovations",
+                        skills: ["Interaction Design", "Usability Testing", "Adobe Creative Suite"]
+                    }
+                ]
+            }
+        ];
+
+        function showAddVacancyModal() {
+            document.getElementById('addVacancyModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function logout() {
+            window.location.href = 'index.html';
+        }
+
+        function renderVacancies() {            const vacanciesList = document.getElementById('vacanciesList');
+            vacanciesList.innerHTML = ''; // Clear the list before rendering
+
+            vacancies.forEach((vacancy, index) => {
+                const vacancyCard = document.createElement('div');
+                vacancyCard.classList.add('vacancy-card');
+                vacancyCard.innerHTML = `
+                    <h3>${vacancy.title}</h3>
+                    <div class="vacancy-info"><i class="fas fa-building"></i>${vacancy.department}</div>
+                    <div class="vacancy-info"><i class="fas fa-map-marker-alt"></i>${vacancy.location}</div>
+                    <button class="btn" onclick="showApplicants(${index})"><i class="fas fa-users"></i> View Applicants</button>
+                `;
+                vacanciesList.appendChild(vacancyCard);
+            });
+        }
+
+        function showApplicants(vacancyIndex) {
+            const modal = document.getElementById('applicantsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const applicantsList = document.getElementById('applicantsList');
+            const selectedVacancy = vacancies[vacancyIndex];
+
+            modalTitle.innerText = `Applicants for ${selectedVacancy.title}`;
+            applicantsList.innerHTML = ''; // Clear previous applicants
+
+            selectedVacancy.applicants.forEach(applicant => {
+                const applicantCard = document.createElement('li');
+                applicantCard.classList.add('applicant-card');
+                applicantCard.innerHTML = `
+                    <div class="applicant-name">${applicant.name}</div>
+                    <div class="applicant-info">Age: ${applicant.age}</div>
+                    <div class="applicant-info">Education: ${applicant.education}</div>
+                    <div class="applicant-info">Experience: ${applicant.experience}</div>
+                    <div class="applicant-info">Current Company: ${applicant.currentCompany}</div>
+                    <div class="applicant-skills">
+                        ${applicant.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                    </div>
+                `;
+                applicantsList.appendChild(applicantCard);
+            });
+
+            modal.style.display = 'block';
+        }
+
+        document.getElementById('vacancyForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the form from submitting normally
+
+            const newVacancy = {
+                title: document.getElementById('title').value,
+                department: document.getElementById('department').value,
+                location: document.getElementById('location').value,
+                applicants: [] // Empty array for applicants
+            };
+
+            vacancies.push(newVacancy); // Add the new vacancy to the list
+            renderVacancies(); // Re-render the list
+            closeModal('addVacancyModal'); // Close the modal
+            document.getElementById('vacancyForm').reset(); // Clear the form
+        });
+
+        // Initial render of the vacancies
+        renderVacancies();
+    </script>
+</body>
+
+</html>

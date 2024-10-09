@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkWise - Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --background-color: #f4f4f4;
+            --hover-color: #e0e0e0;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+    width: 250px;
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+    height: 100vh; /* Set the height to 100% of the viewport height */
+    position: sticky; /* Make the sidebar sticky */
+    top: 0; /* Align to the top of the viewport */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-button {
+    margin-top: auto; 
+    padding: 10px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            color: var(--secondary-color);
+        }
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notification-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-item i {
+            font-size: 1.5em;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-content p {
+            margin-bottom: 5px;
+        }
+
+        .notification-date {
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .notification-item.application i {
+            color: #e74c3c;
+        }
+
+        .notification-item.job_match i {
+            color: #2ecc71;
+        }
+
+        .notification-item.interview i {
+            color: #f39c12;
+        }
+
+        .notification-item.message i {
+            color: #3498db;
+        }
+
+        .notification-item.system i {
+            color: #9b59b6;
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .filter-bar select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .mark-all-read {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mark-all-read:hover {
+            background-color: #2980b9;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .notification-actions button {
+            background-color: transparent;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .notification-actions button:hover {
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png" alt="WorkWise Logo">
+            </div>
+            <nav>
+                <a href="applicant.html" class="nav-item"><i class="fas fa-briefcase"></i> Job Vacancies</a>
+                <a href="my-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> My Applications</a>
+                <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> Profile</a>
+                <a href="saved-jobs.html" class="nav-item"><i class="fas fa-heart"></i> Saved Jobs</a>
+                <a href="notifications.html" class="nav-item active"><i class="fas fa-bell"></i> Notifications</a>
+                <a href="job-market-insights.html" class="nav-item"><i class="fas fa-chart-line"></i> Job Market Insights</a>
+               
+             
+            </nav>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Notifications</h1>
+            </div>
+            <div class="filter-bar">
+                <select id="notificationFilter">
+                    <option value="all">All Notifications</option>
+                    <option value="application">Applications</option>
+                    <option value="job_match">Job Matches</option>
+                    <option value="interview">Interviews</option>
+                    <option value="message">Messages</option>
+                    <option value="system">System</option>
+                </select>
+                <button class="mark-all-read" onclick="markAllAsRead()">Mark All as Read</button>
+            </div>
+            <div id="notificationsList" class="notifications-list">
+                <!-- Notifications will be dynamically added here -->
+            </div>
+        </main>
+    </div>
+    <script>
+        // Sample notifications data
+        let notifications = [
+            { id: 1, type: "application", message: "Your application for Senior Software Engineer at Tech Co has been viewed", date: "2023-05-20", read: false },
+            { id: 2, type: "job_match", message: "New job match: UX Designer at Design Studio", date: "2023-05-19", read: false },
+            { id: 3, type: "interview", message: "Interview scheduled for Product Manager position at Innovate Inc", date: "2023-05-18", read: true },
+            { id: 4, type: "message", message: "New message from recruiter at Global Tech", date: "2023-05-17", read: false },
+            { id: 5, type: "system", message: "Your profile has been successfully updated", date: "2023-05-16", read: true },
+            { id: 6, type: "application", message: "Your application for Data Scientist at AI Solutions has been received", date: "2023-05-15", read: false },
+            { id: 7, type: "job_match", message: "New job match: Frontend Developer at Web Wizards", date: "2023-05-14", read: false },
+            { id: 8, type: "interview", message: "Reminder: Interview for Software Engineer position tomorrow at 2 PM", date: "2023-05-13", read: true },
+            { id: 9, type: "message", message: "New message from hiring manager at Tech Innovators", date: "2023-05-12", read: false },
+            { id: 10, type: "system", message: "Your account security has been enhanced", date: "2023-05-11", read: true }
+        ];
+
+        function displayNotifications(filter = 'all') {
+            const notificationsList = document.getElementById('notificationsList');
+            notificationsList.innerHTML = '';
+
+            const filteredNotifications = filter === 'all' 
+                ? notifications 
+                : notifications.filter(notification => notification.type === filter);
+
+            filteredNotifications.forEach(notification => {
+                const notificationItem = document.createElement('div');
+                notificationItem.className = `notification-item ${notification.type} ${notification.read ? 'read' : 'unread'}`;
+                notificationItem.innerHTML = `
+                    <i class="fas ${getNotificationIcon(notification.type)}"></i>
+                    <div class="notification-content">
+                        <p>${notification.message}</p>
+                        <span class="notification-date">${notification.date}</span>
+                    </div>
+                    <div class="notification-actions">
+                        <button onclick="markAsRead(${notification.id})"><i class="fas fa-check"></i></button>
+                        <button onclick="deleteNotification(${notification.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                notificationsList.appendChild(notificationItem);
+            });
+        }
+
+        function getNotificationIcon(type) {
+            switch (type) {
+                case 'application': return 'fa-file-alt';
+                case 'job_match': return 'fa-briefcase';
+                case 'interview': return 'fa-calendar-check';
+                case 'message': return 'fa-envelope';
+                case 'system': return 'fa-cog';
+                default: return 'fa-bell';
+            }
+        }
+
+        function markAsRead(id) {
+            const notification = notifications.find(n => n.id === id);
+            if (notification) {
+                notification.read = true;
+                displayNotifications(document.getElementById('notificationFilter').value);
+            }
+        }
+
+        function deleteNotification(id) {
+            notifications = notifications.filter(n => n.id !== id);
+            displayNotifications(document.getElementById('notificationFilter').value);
+        }
+
+        function markAllAsRead() {
+            notifications.forEach(notification => notification.read = true);
+            displayNotifications(document.getElementById('notificationFilter').value);
+        }
+
+        function logout() {
+          window.location.href = 'index.html'; // Redirect to the signup page
+        }
+
+
+        document.getElementById('notificationFilter').addEventListener('change', (e) => {
+            displayNotifications(e.target.value);
+        });
+
+        // Initialize the page
+        displayNotifications();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProHire Portal - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* CSS styles remain unchanged */
+        :root {
+            --primary-color: #ff6f61;
+            --secondary-color: #e74c3c;
+            --background-color: #f4f7f9;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-button {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+            margin: 0 5px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .nav-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border: 1px solid var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color var(--transition-speed) ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        input::placeholder {
+            color: var(--border-color);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        button:hover {
+            background-color: #333333;
+        }
+
+        .error-message {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #888;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png"
+                alt="WorkWise Logo">
+        </div>
+        <h1>Login</h1>
+        <div class="button-group">
+            <button class="nav-button" id="hrButton">HR</button>
+            <button class="nav-button" id="employeeButton">Employee</button>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p id="errorMessage" class="error-message"></p>
+        <footer>
+            &copy; 2024 WorkWise | All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const hrButton = document.getElementById('hrButton');
+        const employeeButton = document.getElementById('employeeButton');
+
+        let selectedRole = null;
+
+        hrButton.addEventListener('click', () => {
+            selectedRole = 'hr';
+            hrButton.style.backgroundColor = 'var(--primary-color)';
+            hrButton.style.color = 'white';
+            employeeButton.style.backgroundColor = 'var(--background-color)';
+            employeeButton.style.color = 'var(--primary-color)';
+        });
+
+        employeeButton.addEventListener('click', () => {
+            selectedRole = 'employee';
+            employeeButton.style.backgroundColor = 'var(--primary-color)';
+            employeeButton.style.color = 'white';
+            hrButton.style.backgroundColor = 'var(--background-color)';
+            hrButton.style.color = 'var(--primary-color)';
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!selectedRole) {
+                errorMessage.textContent = 'Please select HR or Employee role';
+                return;
+            }
+
+            // Check for HR credentials
+            if (selectedRole === 'hr' && username === 'admin' && password === 'admin123') {
+                alert('Login successful as HR');
+                window.location.href = 'hr_profile.html';
+            } 
+            // Check for Employee credentials
+            else if (selectedRole === 'employee' && username === 'employee' && password === 'employee123') {
+                alert('Login successful as Employee');
+                window.location.href = 'applicant.html';
+            } 
+            else {
+                errorMessage.textContent = 'Invalid username or password';
+            }
+        });
+    </script>
+</body>
+
+</html>

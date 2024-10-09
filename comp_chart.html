@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Native - Organizational Chart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --background-color: #f8f9fa;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --hover-color: #e8f0fe;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+        }
+
+        .logout-button {
+            margin-top: auto;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-button:hover {
+            background-color: #1967d2;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            overflow-y: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .org-chart {
+            display: flex;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            overflow: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tree ul {
+            padding-top: 20px;
+            position: relative;
+            transition: all 0.5s;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .tree li {
+            float: left;
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 5px 0 5px;
+            transition: all 0.5s;
+        }
+
+        .tree li::before,
+        .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 1px solid var(--border-color);
+            width: 50%;
+            height: 20px;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .tree li:only-child::after,
+        .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before,
+        .tree li:last-child::after {
+            border: 0 none;
+        }
+
+        .tree li:last-child::before {
+            border-right: 1px solid var(--border-color);
+            border-radius: 0 5px 0 0;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 5px 0 0 0;
+        }
+
+        .tree ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 1px solid var(--border-color);
+            width: 0;
+            height: 20px;
+        }
+
+        .tree li div {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 14px;
+            display: inline-block;
+            border-radius: var(--border-radius);
+            transition: all 0.5s;
+            background-color: #fff;
+            box-shadow: var(--shadow);
+        }
+
+        .tree li div:hover {
+            background: var(--hover-color);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tree li div h3 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+
+        .tree li div p {
+            margin: 2px 0;
+            font-size: 12px;
+        }
+
+        .employee-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .zoom-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .zoom-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .zoom-btn:hover {
+            background-color: #1967d2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding: 10px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .org-chart {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png"
+                    alt="WorkWise Logo">
+            </div>
+            <nav>
+                <a href="hr_profile.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="department.html" class="nav-item"><i class="fas fa-building"></i> Departments</a>
+                <a href="organizational-chart.html" class="nav-item active"><i class="fas fa-sitemap"></i> Org Chart</a>
+                <a href="vacancies.html" class="nav-item"><i class="fas fa-briefcase"></i> Job Vacancies</a>
+                <a href="campus-drive.html" class="nav-item"><i class="fas fa-university"></i> Campus Drive</a>
+                <a href="calender.html" class="nav-item"><i class="fas fa-calendar"></i> <span>Calendar</span></a>
+                <a href="tasks.html" class="nav-item"><i class="fas fa-tasks"></i> <span>Tasks</span></a>
+            </nav>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </aside>
+        <main class="main-content">
+            <h1>Organizational Chart</h1>
+            <p class="subtitle">Explore how teams, people, and departments are connected.</p>
+            <div class="org-chart" id="orgChart"></div>
+        </main>
+    </div>
+
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoomIn"><i class="fas fa-plus"></i></button>
+        <button class="zoom-btn" id="zoomOut"><i class="fas fa-minus"></i></button>
+    </div>
+
+    <script>
+        const orgData = {
+            name: 'Pat Everet', post: 'CEO', specialty: 'Strategic Leadership', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-1210-1024x683.jpg',
+            children: [
+                {
+                    name: 'Robby Steward', post: 'VP, Engineering', specialty: 'Technical Innovation', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-797-1024x683.jpg',
+                    children: [
+                        { name: 'Cameron', post: 'Software Engineer', specialty: 'Full-stack Development', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-2397-1-2-1024x683.jpg' },
+                        { name: 'Dylan', post: 'UX Designer', specialty: 'User-Centered Design', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-1029-1024x683.jpg' },
+                        { name: 'Ella', post: 'Data Analyst', specialty: 'Big Data Analytics', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-755-1-1024x683.jpg' },
+                        { name: 'Fiona', post: 'DevOps Engineer', specialty: 'CI/CD Pipelines', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-1941-1024x683.jpg' }
+                    ]
+                },
+                {
+                    name: 'Jenn Cooper', post: 'VP, HR', specialty: 'Talent Management', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-1029-1024x683.jpg',
+                    children: [
+                        { name: 'Mitchell', post: 'HR Manager', specialty: 'Employee Relations', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-2397-1-2-1024x683.jpg' },
+                        { name: 'Olivia', post: 'Talent Acquisition', specialty: 'Recruitment Strategies', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-1941-1024x683.jpg' },
+                        { name: 'Michael', post: 'Training Coordinator', specialty: 'Learning & Development', image: 'https://www.corporatephotographylondon.com/wp-content/uploads/2019/11/HKstrategies-1029-1024x683.jpg' }
+                    ]
+                }
+            ]
+        };
+
+        const createEmployeeNode = (data) => {
+            const li = document.createElement('li');
+            const div = document.createElement('div');
+
+            const img = document.createElement('img');
+            img.src = data.image;
+            img.alt = data.name;
+            img.classList.add('employee-image');
+
+            const h3 = document.createElement('h3');
+            h3.textContent = data.name;
+
+            const post = document.createElement('p');
+            post.textContent = data.post;
+
+            const specialty = document.createElement('p');
+            specialty.textContent = data.specialty;
+
+            div.appendChild(img);
+            div.appendChild(h3);
+            div.appendChild(post);
+            div.appendChild(specialty);
+
+            li.appendChild(div);
+
+            if (data.children) {
+                const ul = document.createElement('ul');
+                data.children.forEach(child => {
+                    ul.appendChild(createEmployeeNode(child));
+                });
+                li.appendChild(ul);
+            }
+
+            return li;
+        };
+
+        const orgChart = document.getElementById('orgChart');
+        const tree = document.createElement('div');
+        tree.classList.add('tree');
+        const ul = document.createElement('ul');
+
+        ul.appendChild(createEmployeeNode(orgData));
+        tree.appendChild(ul);
+        orgChart.appendChild(tree);
+
+        // Zoom functionality
+        let currentZoom = 1;
+        const zoomStep = 0.1;
+        const zoomIn = document.getElementById('zoomIn');
+        const zoomOut = document.getElementById('zoomOut');
+
+        zoomIn.addEventListener('click', () => {
+            currentZoom += zoomStep;
+            applyZoom();
+        });
+
+        zoomOut.addEventListener('click', () => {
+            if (currentZoom > zoomStep) {
+                currentZoom -= zoomStep;
+                applyZoom();
+            }
+        });
+
+        function applyZoom() {
+            tree.style.transform = `scale(${currentZoom})`;
+        }
+
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

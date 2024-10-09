@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkWise - Saved Jobs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --background-color: #f4f4f4;
+            --hover-color: #e0e0e0;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-button {
+            margin-top: auto;
+            padding: 10px;
+            background-color:  #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            color: var(--secondary-color);
+        }
+
+        .saved-jobs-list {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .job-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .job-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .job-card p {
+            margin-bottom: 5px;
+        }
+
+        .job-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .apply-button, .remove-saved-job {
+            margin-top: 15px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .apply-button {
+            background-color: var(--primary-color);
+            color: white;
+            margin-right: 10px;
+        }
+
+        .apply-button:hover {
+            background-color: #2980b9;
+        }
+
+        .remove-saved-job {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .remove-saved-job:hover {
+            background-color: #c0392b;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            flex: 1;
+            margin-right: 15px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-card:last-child {
+            margin-right: 0;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+            }
+
+            .saved-jobs-list {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png" alt="WorkWise Logo">
+            </div>
+            <nav>
+                <a href="applicant.html" class="nav-item"><i class="fas fa-briefcase"></i> Job Vacancies</a>
+                <a href="my-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> My Applications</a>
+                <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> Profile</a>
+                <a href="saved-jobs.html" class="nav-item active"><i class="fas fa-heart"></i> Saved Jobs</a>
+                <a href="notifications.html" class="nav-item"><i class="fas fa-bell"></i> Notifications</a>
+                <a href="job-market-insights.html" class="nav-item"><i class="fas fa-chart-line"></i> Job Market Insights</a>
+               
+              
+            </nav>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Saved Jobs</h1>
+            </div>
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="totalSavedJobs">0</h3>
+                    <p>Total Saved Jobs</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="appliedJobs">0</h3>
+                    <p>Applied Jobs</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pendingApplications">0</h3>
+                    <p>Pending Applications</p>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search saved jobs...">
+            </div>
+            <div id="savedJobsList" class="saved-jobs-list">
+                <!-- Saved jobs will be dynamically added here -->
+            </div>
+        </main>
+    </div>
+    <script>
+        // Sample saved jobs data
+        const savedJobs = [
+            { id: 1, title: "Senior Software Engineer", company: "Tech Co", location: "San Francisco", salary: "$130,000 - $180,000", type: "Full-time", posted: "2 days ago" },
+            { id: 2, title: "Product Manager", company: "Innovate Inc", location: "New York", salary: "$110,000 - $150,000", type: "Full-time", posted: "1 week ago" },
+            { id: 3, title: "UX Designer", company: "Design Studio", location: "Remote", salary: "$90,000 - $130,000", type: "Contract", posted: "3 days ago" },
+            { id: 4, title: "Data Scientist", company: "Data Insights", location: "Chicago", salary: "$100,000 - $140,000", type: "Full-time", posted: "5 days ago" },
+            { id: 5, title: "Marketing Manager", company: "Brand Builders", location: "Los Angeles", salary: "$80,000 - $120,000", type: "Full-time", posted: "1 day ago" }
+        ];
+
+        function displaySavedJobs() {
+            const savedJobsList = document.getElementById('savedJobsList');
+            savedJobsList.innerHTML = '';
+
+            savedJobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'job-card';
+                jobCard.innerHTML = `
+                    <h3>${job.title}</h3>
+                    <p><strong>Company:</strong> ${job.company}</p>
+                    <p><strong>Location:</strong> ${job.location}</p>
+                    <p><strong>Salary:</strong> ${job.salary}</p>
+                    <div class="job-meta">
+                        <span><i class="fas fa-clock"></i> ${job.type}</span>
+                        <span><i class="fas fa-calendar-alt"></i> Posted: ${job.posted}</span>
+                    </div>
+                    <button class="apply-button" onclick="applyForJob(${job.id})">Apply</button>
+                    <button class="remove-saved-job" onclick="removeSavedJob(${job.id})">Remove</button>
+                `;
+                savedJobsList.appendChild(jobCard);
+            });
+
+            updateStats();
+        }
+
+        function removeSavedJob(jobId) {
+            const index = savedJobs.findIndex(job => job.id === jobId);
+            if (index !== -1) {
+                savedJobs.splice(index, 1);
+                displaySavedJobs();
+            }
+        }
+
+        function applyForJob(jobId) {
+            alert(`Applied for job with ID: ${jobId}`);
+            // In a real application, this would send an application to the server
+        }
+
+        function updateStats() {
+            document.getElementById('totalSavedJobs').textContent = savedJobs.length;
+            // In a real application, these would be calculated based on actual data
+            document.getElementById('appliedJobs').textContent = '2';
+            document.getElementById('pendingApplications').textContent = '3';
+        }
+
+        function logout() {
+          window.location.href = 'index.html'; // Redirect to the signup page
+        }
+
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filteredJobs = savedJobs.filter(job => 
+                job.title.toLowerCase().includes(searchTerm) ||
+                job.company.toLowerCase().includes(searchTerm) ||
+                job.location.toLowerCase().includes(searchTerm)
+            );
+            displayFilteredJobs(filteredJobs);
+        });
+
+        function displayFilteredJobs(jobs) {
+            const savedJobsList = document.getElementById('savedJobsList');
+            savedJobsList.innerHTML = '';
+
+            jobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'job-card';
+                jobCard.innerHTML = `
+                    <h3>${job.title}</h3>
+                    <p><strong>Company:</strong> ${job.company}</p>
+                    <p><strong>Location:</strong> ${job.location}</p>
+                    <p><strong>Salary:</strong> ${job.salary}</p>
+                    <div class="job-meta">
+                        <span><i class="fas fa-clock"></i> ${job.type}</span>
+                        <span><i class="fas fa-calendar-alt"></i> Posted: ${job.posted}</span>
+                    </div>
+                    <button class="apply-button" onclick="applyForJob(${job.id})">Apply</button>
+                    <button class="remove-saved-job" onclick="removeSavedJob(${job.id})">Remove</button>
+                `;
+                savedJobsList.appendChild(jobCard);
+            });
+        }
+
+        displaySavedJobs();
+    </script>
+</body>
+
+</html>

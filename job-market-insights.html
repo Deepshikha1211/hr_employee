@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkWise - Job Market Insights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --text-secondary: #777;
+            --border-color: #e0e0e0;
+            --hover-color: #e8f0fe;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-button {
+            margin-top: auto;
+            padding: 10px;
+            background-color:  #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5em;
+            color: var(--secondary-color);
+        }
+
+        .insights-container {
+            display: grid;
+            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-container h2 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .chart-container.small {
+            height: 400px;
+        }
+
+        .insights-summary {
+            grid-column: 1 / -1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .insights-summary h2 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .insights-summary ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .insights-summary li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .insights-summary li::before {
+            content: "\f0a4";
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            font-size: 16px;
+            background-color: white;
+        }
+
+        .update-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .update-button:hover {
+            background-color: #2980b9;
+        }
+
+        .key-stat {
+            background-color: var(--hover-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .key-stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .logo img, .nav-item span, .logout-button span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+            }
+
+            .insights-container {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div>
+                <div class="logo">
+                    <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png" alt="WorkWise Logo">
+                </div>
+                <nav>
+                    <a href="applicant.html" class="nav-item"><i class="fas fa-briefcase"></i> <span>Job Vacancies</span></a>
+                    <a href="my-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> <span>My Applications</span></a>
+                    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <span>Profile</span></a>
+                    <a href="saved-jobs.html" class="nav-item"><i class="fas fa-heart"></i> <span>Saved Jobs</span></a>
+                    <a href="notifications.html" class="nav-item"><i class="fas fa-bell"></i> <span>Notifications</span></a>
+                    <a href="job-market-insights.html" class="nav-item active"><i class="fas fa-chart-line"></i> <span>Job Market Insights</span></a>
+                   
+                </nav>
+            </div>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Job Market Insights</h1>
+            </div>
+            <div class="filters">
+                <select class="filter-select" id="industryFilter">
+                    <option value="all">All Industries</option>
+                    <option value="tech">Technology</option>
+                    <option value="finance">Finance</option>
+                    <option value="healthcare">Healthcare</option>
+                </select>
+                <select class="filter-select" id="locationFilter">
+                    <option value="all">All Locations</option>
+                    <option value="us">United States</option>
+                    <option value="eu">Europe</option>
+                    <option value="asia">Asia</option>
+                </select>
+                <button class="update-button" onclick="updateInsights()">Update Insights</button>
+            </div>
+            <div class="key-stat">
+                <span>Overall Job Market Growth</span>
+                <span class="key-stat-value">+5.2%</span>
+            </div>
+            <div class="insights-container">
+                <div class="chart-container">
+                    <h2>Top In-Demand Skills</h2>
+                    <canvas id="skillsChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h2>Average Salaries by Role</h2>
+                    <canvas id="salaryChart"></canvas>
+                </div>
+                <div class="chart-container small">
+                    <h2>Job Postings by Industry</h2>
+                    <canvas id="industryChart"></canvas>
+                </div>
+                <div class="chart-container small">
+                    <h2>Remote vs. On-site Jobs</h2>
+                    <canvas id="remoteChart"></canvas>
+                </div>
+                <div class="insights-summary">
+                    <h2>Market Trends</h2>
+                    <ul>
+                        <li>Growing demand for AI and Machine Learning specialists, with a 30% increase in job postings</li>
+                        <li>Remote work opportunities have risen by 150% compared to pre-pandemic levels</li>
+                        <li>Increasing emphasis on soft skills such as adaptability and communication in technical roles</li>
+                        <li>Emerging trend of "hybrid" work models, combining remote and on-site work</li>
+                        <li>Rising demand for cybersecurity professionals across all industries</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Skills chart
+        const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+        new Chart(skillsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['JavaScript', 'Python', 'React', 'Node.js', 'SQL', 'AWS'],
+                datasets: [{
+                    label: 'Demand (%)',
+                    data: [75, 70, 65, 60, 55, 50],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Salary chart
+        const salaryCtx = document.getElementById('salaryChart').getContext('2d');
+        new Chart(salaryCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Software Engineer', 'Data Scientist', 'Product Manager', 'UX Designer', 'DevOps Engineer'],
+                datasets: [{
+                    label: 'Average Salary ($)',
+                    data: [120000, 130000, 115000, 95000, 125000],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Industry chart
+        const industryCtx = document.getElementById('industryChart').getContext('2d');
+        new Chart(industryCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Technology', 'Finance', 'Healthcare', 'Education', 'Manufacturing'],
+                datasets: [{
+                    data: [30, 25, 20, 15, 10],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 13
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Remote vs. On-site chart
+        const remoteCtx = document.getElementById('remoteChart').getContext('2d');
+        new Chart(remoteCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Remote', 'On-site', 'Hybrid'],
+                datasets: [{
+                    data: [40, 35, 25],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Function to simulate updating insights
+        function updateInsights() {
+            alert("Insights updated based on the selected filters.");
+        }
+
+        // Logout function
+        function logout() {
+            window.location.href = 'index.html'; // Redirect to the signup page
+        }
+    </script>
+</body>
+</html>
